@@ -45,10 +45,10 @@ xcodebuild -scheme "$SCHEME" \
   build
 
 APP="$DERIVED/Build/Products/Debug-iphoneos/$SCHEME.app"
-echo "▶︎ Installing $APP…"
+echo "Installing ${APP} ..."
 xcrun devicectl device install app --device "$UDID" "$APP"
 
-echo "▶︎ Launching…"
+echo "Launching ..."
 xcrun devicectl device process launch --device "$UDID" "$BUNDLE_ID" || true
 
 echo "✅ Done. If the app shows 'Untrusted Developer', go to"

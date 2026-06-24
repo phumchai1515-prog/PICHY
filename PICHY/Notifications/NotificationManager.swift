@@ -111,16 +111,41 @@ final class NotificationManager {
                                        horizon: Date,
                                        cal: Calendar) {
         guard let start = shiftStart(for: shift, cal: cal) else { return }
-        guard let fireDate = cal.date(byAdding: .minute, value: -settings.reminderLead.rawValue, to: start) else { return }
-        guard fireDate > now, fireDate <= horizon else { return }
+        guard let (fireDate, leadMinutes) = reminderFire(start: start, configuredLead: settings.reminderLead.rawValue, now: now, cal: cal),
+              fireDate <= horizon else { return }
 
         let content = UNMutableNotificationContent()
         content.title = "ใกล้ถึงเวลาเข้าเวร"
-        content.body = "เวร\(shift.type.label) เริ่ม \(shift.type.timeRange) — อีก \(settings.reminderLead.label)"
+        content.body = "เวร\(shift.type.label) เริ่ม \(shift.type.timeRange) — อีก \(leadLabel(leadMinutes))"
         content.sound = .default
         content.interruptionLevel = .timeSensitive
 
         add(content, fireDate: fireDate, cal: cal, id: shiftPrefix + shift.id.uuidString)
+    }
+
+    /// Picks the reminder time. Normally the configured lead before the shift,
+    /// but if that moment has already passed while the shift is still upcoming,
+    /// it falls back to the longest shorter lead that is still in the future.
+    /// Deterministic, so repeated reschedules don't fire duplicate reminders.
+    private func reminderFire(start: Date, configuredLead: Int, now: Date, cal: Calendar) -> (date: Date, leadMinutes: Int)? {
+        let ladder = [configuredLead, 120, 60, 30, 15, 5]
+            .filter { $0 > 0 && $0 <= configuredLead }
+            .sorted(by: >)
+        for lead in ladder {
+            if let fire = cal.date(byAdding: .minute, value: -lead, to: start), fire > now {
+                return (fire, lead)
+            }
+        }
+        return nil
+    }
+
+    private func leadLabel(_ minutes: Int) -> String {
+        if minutes >= 60 {
+            let h = minutes / 60
+            let m = minutes % 60
+            return m == 0 ? "\(h) ชั่วโมง" : "\(h) ชม. \(m) นาที"
+        }
+        return "\(minutes) นาที"
     }
 
     private func scheduleNightlySummary(_ shift: Shift,

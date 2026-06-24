@@ -14,6 +14,7 @@ struct ProfileSettingsView: View {
     @State private var biometricEnabled = false
     @State private var pendingCount = 0
     @State private var showTestAlert = false
+    @State private var exportFile: ShareableFile?
 
     var body: some View {
         ScrollView {
@@ -91,7 +92,16 @@ struct ProfileSettingsView: View {
                 }
 
                 section(title: "ข้อมูล") {
-                    SettingsChevronRow(icon: "square.and.arrow.up", title: "ส่งออกตารางเวร PDF")
+                    Button {
+                        exportSchedulePDF()
+                    } label: {
+                        SettingsChevronRow(
+                            icon: "square.and.arrow.up",
+                            title: "ส่งออกตารางเวร PDF",
+                            value: BuddhistCalendar.monthYearLong(store.today)
+                        )
+                    }
+                    .buttonStyle(.plain)
                 }
 
                 Spacer(minLength: 40)
@@ -107,6 +117,9 @@ struct ProfileSettingsView: View {
             Button("ตกลง", role: .cancel) {}
         } message: {
             Text("การแจ้งเตือนทดสอบจะเด้งในอีกประมาณ 8 วินาที — ลองล็อกหน้าจอหรือออกจากแอปเพื่อดู")
+        }
+        .sheet(item: $exportFile) { file in
+            ShareSheet(items: [file.url])
         }
         .onChange(of: shiftReminder) { _, new in
             store.updateSettings(store.settings.updating(shiftReminder: new))
@@ -124,6 +137,17 @@ struct ProfileSettingsView: View {
         shiftReminder = store.settings.shiftReminder
         nightlySummary = store.settings.nightlySummary
         biometricEnabled = auth.biometricEnabled
+    }
+
+    private func exportSchedulePDF() {
+        let url = ShiftPDFExporter.export(
+            month: store.today,
+            shifts: store.shiftsInMonth(of: store.today),
+            rates: store.rates,
+            profile: store.profile
+        )
+        guard let url else { return }
+        exportFile = ShareableFile(url: url)
     }
 
     private var rowDivider: some View {

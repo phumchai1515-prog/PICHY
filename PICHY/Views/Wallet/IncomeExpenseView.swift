@@ -7,40 +7,83 @@ import SwiftUI
 
 struct IncomeExpenseView: View {
     @EnvironmentObject var store: AppStore
+    @State private var showAddTransaction = false
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                BalanceHero(
-                    balance: store.monthlyBalance(of: store.today),
-                    income: store.monthlyIncome(of: store.today),
-                    expense: store.monthlyExpense(of: store.today)
-                )
-                .padding(.horizontal, 20)
+        ZStack(alignment: .bottomTrailing) {
+            ScrollView {
+                VStack(spacing: 16) {
+                    BalanceHero(
+                        balance: store.monthlyBalance(of: store.today),
+                        income: store.monthlyIncome(of: store.today),
+                        expense: store.monthlyExpense(of: store.today)
+                    )
+                    .padding(.horizontal, 20)
 
-                HStack {
-                    Text("รายการล่าสุด")
-                        .font(AppFont.display(15, .semibold))
-                        .foregroundColor(AppColors.textPrimary)
-                    Spacer()
-                    Text("ทั้งหมด")
-                        .font(AppFont.body(12, .semibold))
-                        .foregroundColor(AppColors.peachActive)
+                    HStack {
+                        Text("รายการเดือนนี้")
+                            .font(AppFont.display(15, .semibold))
+                            .foregroundColor(AppColors.textPrimary)
+                        Spacer()
+                        Text("\(store.transactionsInMonth(of: store.today).count) รายการ")
+                            .font(AppFont.body(12, .semibold))
+                            .foregroundColor(AppColors.textMuted)
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.top, 4)
+
+                    if groupedTransactions.isEmpty {
+                        emptyState
+                    } else {
+                        TransactionsGroupedList(groups: groupedTransactions)
+                            .padding(.horizontal, 20)
+                    }
+
+                    Spacer(minLength: 90)
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, 4)
-
-                TransactionsGroupedList(
-                    groups: groupedTransactions
-                )
-                .padding(.horizontal, 20)
-
-                Spacer(minLength: 40)
+                .padding(.top, 16)
             }
-            .padding(.top, 16)
+            .background(AppColors.bgScreen)
+
+            Button(action: { showAddTransaction = true }) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .fill(AppColors.peachGradient)
+                        .frame(width: 54, height: 54)
+                        .fabShadow()
+                    Image(systemName: "plus")
+                        .font(.system(size: 22, weight: .semibold))
+                        .foregroundColor(.white)
+                }
+            }
+            .buttonStyle(.pressableScale)
+            .padding(.trailing, 20)
+            .padding(.bottom, 20)
         }
-        .background(AppColors.bgScreen)
         .navigationBarHidden(true)
+        .sheet(isPresented: $showAddTransaction) {
+            NavigationStack {
+                AddTransactionView(date: store.today).environmentObject(store)
+            }
+            .presentationDragIndicator(.visible)
+        }
+    }
+
+    private var emptyState: some View {
+        VStack(spacing: 8) {
+            Image(systemName: "tray")
+                .font(.system(size: 28, weight: .light))
+                .foregroundColor(AppColors.textMuted)
+            Text("ยังไม่มีรายการในเดือนนี้")
+                .font(AppFont.body(13, .semibold))
+                .foregroundColor(AppColors.textSecondary)
+            Text("แตะปุ่ม + เพื่อเพิ่มรายรับ/รายจ่าย")
+                .font(AppFont.body(11, .regular))
+                .foregroundColor(AppColors.textMuted)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(28)
+        .padding(.horizontal, 20)
     }
 
     private var groupedTransactions: [(label: String, items: [Transaction])] {
@@ -48,7 +91,7 @@ struct IncomeExpenseView: View {
         let txs = store.transactionsInMonth(of: store.today)
         let grouped = Dictionary(grouping: txs) { cal.startOfDay(for: $0.date) }
         let sortedDays = grouped.keys.sorted(by: >)
-        return sortedDays.prefix(3).map { day -> (String, [Transaction]) in
+        return sortedDays.map { day -> (String, [Transaction]) in
             let label: String
             if cal.isDate(day, inSameDayAs: store.today) {
                 label = "วันนี้ · \(BuddhistCalendar.dayMonthShort(day))"

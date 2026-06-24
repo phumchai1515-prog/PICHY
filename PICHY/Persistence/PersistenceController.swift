@@ -27,6 +27,12 @@ final class PersistenceController {
     let container: ModelContainer
     private var context: ModelContext { container.mainContext }
 
+    // Last-persisted collections, so persist() only rewrites what actually
+    // changed instead of deleting and re-inserting every row on every edit.
+    private var lastShifts: [Shift] = []
+    private var lastTransactions: [Transaction] = []
+    private var lastActivities: [Activity] = []
+
     /// Shared production stack. Falls back to in-memory if the on-disk store
     /// can't be opened so the app still launches instead of crashing.
     static let shared = PersistenceController()
@@ -55,7 +61,7 @@ final class PersistenceController {
     /// Loads the persisted snapshot, creating a default AppState row on first launch.
     func loadSnapshot() -> DataSnapshot {
         let state = fetchOrCreateState()
-        return DataSnapshot(
+        let snapshot = DataSnapshot(
             shifts: fetchShiftEntities().map(\.asDomain).sorted { $0.date < $1.date },
             transactions: fetchTransactionEntities().map(\.asDomain).sorted { $0.date > $1.date },
             activities: fetchActivityEntities().map(\.asDomain).sorted { $0.time < $1.time },
@@ -65,14 +71,29 @@ final class PersistenceController {
             quota: state.quota,
             hasOnboarded: state.hasOnboarded
         )
+        // Seed the change-tracking caches so the first persist after launch
+        // doesn't needlessly rewrite collections that haven't changed.
+        lastShifts = snapshot.shifts
+        lastTransactions = snapshot.transactions
+        lastActivities = snapshot.activities
+        return snapshot
     }
 
     // MARK: - Save (mirror current arrays into the store)
 
     func persist(_ snapshot: DataSnapshot) {
-        replaceShifts(snapshot.shifts)
-        replaceTransactions(snapshot.transactions)
-        replaceActivities(snapshot.activities)
+        if snapshot.shifts != lastShifts {
+            replaceShifts(snapshot.shifts)
+            lastShifts = snapshot.shifts
+        }
+        if snapshot.transactions != lastTransactions {
+            replaceTransactions(snapshot.transactions)
+            lastTransactions = snapshot.transactions
+        }
+        if snapshot.activities != lastActivities {
+            replaceActivities(snapshot.activities)
+            lastActivities = snapshot.activities
+        }
 
         let state = fetchOrCreateState()
         state.apply(rates: snapshot.rates)

@@ -89,7 +89,8 @@ struct AddActivityView: View {
                 ForEach(ActivityCategory.allCases, id: \.self) { cat in
                     Button { category = cat } label: {
                         HStack(spacing: 6) {
-                            Circle().fill(cat.color).frame(width: 8, height: 8)
+                            Image(systemName: cat.icon)
+                                .font(.system(size: 12, weight: .semibold))
                             Text(cat.label)
                                 .font(AppFont.body(12, .semibold))
                         }

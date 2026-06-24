@@ -39,7 +39,7 @@ enum LeaveType: String, Codable, CaseIterable, Identifiable {
 
     var icon: String {
         switch self {
-        case .dayOff:        return "moon.stars.fill"
+        case .dayOff:        return "cup.and.saucer.fill"
         case .publicHoliday: return "flag.fill"
         case .sick:          return "cross.case.fill"
         case .personal:      return "person.fill"

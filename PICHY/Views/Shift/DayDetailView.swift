@@ -97,7 +97,7 @@ struct DayDetailView: View {
             .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Color.white))
             .cardShadow()
 
-            addButton(title: "เพิ่มเวร") { showAddShift = true }
+            addButton(title: "เพิ่มเวร", icon: "calendar.badge.plus") { showAddShift = true }
         }
     }
 
@@ -172,17 +172,19 @@ struct DayDetailView: View {
             .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Color.white))
             .cardShadow()
 
-            addButton(title: "เพิ่มกิจกรรม") { showAddActivity = true }
+            addButton(title: "เพิ่มกิจกรรม", icon: "plus.circle.fill") { showAddActivity = true }
         }
     }
 
     private func activityRow(_ act: Activity) -> some View {
         HStack(spacing: 12) {
-            Text(act.time)
-                .font(AppFont.display(13, .semibold))
-                .foregroundColor(act.category.color)
-                .frame(width: 46, alignment: .leading)
-            Circle().fill(act.category.color).frame(width: 8, height: 8)
+            ZStack {
+                RoundedRectangle(cornerRadius: 12, style: .continuous).fill(act.category.tintBG)
+                Image(systemName: act.category.icon)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundColor(act.category.color)
+            }
+            .frame(width: 40, height: 40)
             VStack(alignment: .leading, spacing: 2) {
                 Text(act.title)
                     .font(AppFont.body(13, .semibold))
@@ -194,6 +196,9 @@ struct DayDetailView: View {
                 }
             }
             Spacer()
+            Text(act.time)
+                .font(AppFont.display(13, .semibold))
+                .foregroundColor(act.category.color)
         }
         .padding(12)
     }
@@ -221,10 +226,10 @@ struct DayDetailView: View {
         .padding(16)
     }
 
-    private func addButton(title: String, action: @escaping () -> Void) -> some View {
+    private func addButton(title: String, icon: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack(spacing: 8) {
-                Image(systemName: "plus.circle.fill")
+                Image(systemName: icon)
                 Text(title)
             }
             .font(AppFont.body(14, .semibold))

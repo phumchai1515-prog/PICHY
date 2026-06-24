@@ -16,6 +16,25 @@ enum ActivityCategory: String, Codable, CaseIterable {
         case .personal:     return Color(hex: 0x7E6EE0)
         }
     }
+
+    /// SF Symbol shown in the category chip and activity rows.
+    var icon: String {
+        switch self {
+        case .morningShift: return "stethoscope"
+        case .meeting:      return "person.2.fill"
+        case .ot:           return "clock.arrow.circlepath"
+        case .personal:     return "heart.fill"
+        }
+    }
+
+    var tintBG: Color {
+        switch self {
+        case .morningShift: return Color(hex: 0xFAEBD3)
+        case .meeting:      return Color(hex: 0xDFF1ED)
+        case .ot:           return Color(hex: 0xFAE3EB)
+        case .personal:     return Color(hex: 0xEBE6FA)
+        }
+    }
 }
 
 struct Activity: Identifiable, Codable, Equatable {

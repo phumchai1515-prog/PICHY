@@ -42,7 +42,7 @@ private struct ShiftTypeCard: View {
                         .font(.system(size: 14, weight: .bold))
                         .foregroundColor(type.textColor)
                 } else if type == .off {
-                    Image(systemName: "moon.stars.fill")
+                    Image(systemName: "cup.and.saucer.fill")
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundColor(type.textColor)
                 } else {

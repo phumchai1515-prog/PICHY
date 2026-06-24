@@ -291,10 +291,15 @@ final class AppStore: ObservableObject {
         }
     }
 
+    /// Base shift pay only (OT hours are reported separately by `incomeFromOT`,
+    /// so they must be excluded here to avoid double-counting).
     func incomeFromShifts(of date: Date) -> Int {
-        transactionsInMonth(of: date)
-            .filter { $0.source == .shift && $0.shiftType != .ot }
-            .reduce(0) { $0 + $1.amount }
+        shiftsInMonth(of: date)
+            .filter { $0.type != .ot }
+            .reduce(0) { sum, shift in
+                let otPortion = shift.otHours * rates.otPerHour
+                return sum + max(0, shift.income(using: rates) - otPortion)
+            }
     }
 
     func incomeFromOT(of date: Date) -> Int {

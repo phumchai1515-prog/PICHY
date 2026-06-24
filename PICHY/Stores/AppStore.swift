@@ -36,6 +36,11 @@ final class AppStore: ObservableObject {
         // App starts completely empty. The user registers (onboarding) and then
         // enters their own shifts and transactions — no sample/seed data.
         rescheduleNotifications()
+
+        // Safety net for users who reach the app without the onboarding prompt
+        // having granted permission (e.g. installed before it existed).
+        let notifications = self.notifications
+        Task { await notifications.requestAuthorizationIfNeeded() }
     }
 
     // MARK: - Snapshot / persistence

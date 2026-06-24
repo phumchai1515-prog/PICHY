@@ -23,6 +23,12 @@ final class NotificationManager {
     /// 64 pending-notification limit iOS enforces per app.
     private let horizonDays = 30
 
+    private init() {
+        // Must be set before any notification can be presented, otherwise iOS
+        // suppresses banners while the app is in the foreground.
+        center.delegate = NotificationDelegate.shared
+    }
+
     // MARK: - Authorization
 
     func requestAuthorization() async -> Bool {
@@ -35,6 +41,13 @@ final class NotificationManager {
 
     func authorizationStatus() async -> UNAuthorizationStatus {
         await center.notificationSettings().authorizationStatus
+    }
+
+    /// Requests permission once if the user has never been asked. Safe to call on
+    /// every launch — it no-ops when the status is already determined.
+    func requestAuthorizationIfNeeded() async {
+        guard await authorizationStatus() == .notDetermined else { return }
+        _ = await requestAuthorization()
     }
 
     // MARK: - Scheduling

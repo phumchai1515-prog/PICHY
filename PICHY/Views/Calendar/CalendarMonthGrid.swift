@@ -12,32 +12,45 @@ struct CalendarMonthGrid: View {
     let onTapDay: (Date) -> Void
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 5), count: 7)
+    private let rowSpacing: CGFloat = 5
+    private let headerHeight: CGFloat = 22
+    private let gridSpacing: CGFloat = 8
+    private let minCellHeight: CGFloat = 45
 
     var body: some View {
-        VStack(spacing: 8) {
-            // Weekday header
-            LazyVGrid(columns: columns, spacing: 5) {
-                ForEach(Array(BuddhistCalendar.weekdayHeaders.enumerated()), id: \.offset) { idx, name in
-                    Text(name)
-                        .font(AppFont.body(11, .semibold))
-                        .foregroundColor(idx == 0 ? AppColors.peachActive : AppColors.textMuted)
-                        .frame(maxWidth: .infinity)
-                }
-            }
+        let cells = buildCells()
+        let rowCount = max(cells.count / 7, 1)
 
-            // Calendar cells
-            LazyVGrid(columns: columns, spacing: 5) {
-                ForEach(buildCells().indices, id: \.self) { index in
-                    let cell = buildCells()[index]
-                    if let date = cell {
-                        CalendarDayCell(
-                            date: date,
-                            isToday: Calendar.gregorian.isDate(date, inSameDayAs: today),
-                            shifts: shiftLookup(date),
-                            onTap: { onTapDay(date) }
-                        )
-                    } else {
-                        Color.clear.frame(height: 45)
+        GeometryReader { geo in
+            let used = headerHeight + gridSpacing + CGFloat(rowCount - 1) * rowSpacing
+            let cellHeight = max(minCellHeight, (geo.size.height - used) / CGFloat(rowCount))
+
+            VStack(spacing: gridSpacing) {
+                // Weekday header
+                LazyVGrid(columns: columns, spacing: rowSpacing) {
+                    ForEach(Array(BuddhistCalendar.weekdayHeaders.enumerated()), id: \.offset) { idx, name in
+                        Text(name)
+                            .font(AppFont.body(11, .semibold))
+                            .foregroundColor(idx == 0 ? AppColors.peachActive : AppColors.textMuted)
+                            .frame(maxWidth: .infinity)
+                    }
+                }
+                .frame(height: headerHeight)
+
+                // Calendar cells
+                LazyVGrid(columns: columns, spacing: rowSpacing) {
+                    ForEach(cells.indices, id: \.self) { index in
+                        if let date = cells[index] {
+                            CalendarDayCell(
+                                date: date,
+                                isToday: Calendar.gregorian.isDate(date, inSameDayAs: today),
+                                shifts: shiftLookup(date),
+                                height: cellHeight,
+                                onTap: { onTapDay(date) }
+                            )
+                        } else {
+                            Color.clear.frame(height: cellHeight)
+                        }
                     }
                 }
             }

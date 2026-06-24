@@ -12,42 +12,41 @@ struct CalendarHomeView: View {
     @State private var showActivities = false
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                CalendarHeader(
-                    profile: store.profile,
-                    anchor: store.today,
-                    onBellTap: { showActivities = true }
-                )
-                .padding(.horizontal, 20)
+        VStack(spacing: 16) {
+            CalendarHeader(
+                profile: store.profile,
+                anchor: store.today,
+                onBellTap: { showActivities = true }
+            )
+            .padding(.horizontal, 20)
 
-                MonthSelectorCard(
-                    month: displayedMonth,
-                    shiftCount: store.shiftsInMonth(of: displayedMonth)
-                        .filter { $0.type != .off }.count,
-                    monthlyIncome: store.monthlyIncome(of: displayedMonth),
-                    onPrev: { changeMonth(by: -1) },
-                    onNext: { changeMonth(by: 1) }
-                )
-                .padding(.horizontal, 20)
+            MonthSelectorCard(
+                month: displayedMonth,
+                shiftCount: store.shiftsInMonth(of: displayedMonth)
+                    .filter { $0.type != .off }.count,
+                monthlyIncome: store.monthlyIncome(of: displayedMonth),
+                onPrev: { changeMonth(by: -1) },
+                onNext: { changeMonth(by: 1) }
+            )
+            .padding(.horizontal, 20)
 
-                CalendarMonthGrid(
-                    month: displayedMonth,
-                    today: store.today,
-                    shiftLookup: { date in store.shifts(on: date) },
-                    onTapDay: { date in selectedDate = date }
-                )
-                .padding(.horizontal, 20)
+            CalendarMonthGrid(
+                month: displayedMonth,
+                today: store.today,
+                shiftLookup: { date in store.shifts(on: date) },
+                onTapDay: { date in selectedDate = date }
+            )
+            .padding(.horizontal, 20)
+            .frame(maxHeight: .infinity)
 
-                ShiftLegendRow(
-                    counts: store.shiftCountsInMonth(of: displayedMonth)
-                )
-                .padding(.horizontal, 20)
-
-                Spacer(minLength: 40)
-            }
-            .padding(.top, 12)
+            ShiftLegendRow(
+                counts: store.shiftCountsInMonth(of: displayedMonth)
+            )
+            .padding(.horizontal, 20)
+            .padding(.bottom, 12)
         }
+        .padding(.top, 12)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(AppColors.bgScreen)
         .navigationBarHidden(true)
         .navigationDestination(isPresented: $showActivities) {

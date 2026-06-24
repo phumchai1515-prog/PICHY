@@ -9,6 +9,7 @@ struct CalendarDayCell: View {
     let date: Date
     let isToday: Bool
     let shifts: [Shift]
+    var height: CGFloat = 45
     let onTap: () -> Void
 
     /// Shifts that count as "work" (drive the tint and chips).
@@ -25,9 +26,9 @@ struct CalendarDayCell: View {
             ZStack(alignment: .topTrailing) {
                 cellBackground
                     .overlay(
-                        VStack(spacing: 2) {
+                        VStack(spacing: 3) {
                             Text("\(dayNumber)")
-                                .font(AppFont.display(12, .semibold))
+                                .font(AppFont.display(dayFontSize, .semibold))
                                 .foregroundColor(numberColor)
                             shiftChips
                         }
@@ -35,11 +36,11 @@ struct CalendarDayCell: View {
                 if hasOT {
                     Circle()
                         .fill(ShiftType.ot.dot)
-                        .frame(width: 7, height: 7)
-                        .padding(4)
+                        .frame(width: dotSize, height: dotSize)
+                        .padding(5)
                 }
             }
-            .frame(height: 45)
+            .frame(height: height)
         }
         .buttonStyle(.pressableScale)
     }
@@ -47,6 +48,11 @@ struct CalendarDayCell: View {
     private var dayNumber: Int {
         Calendar.gregorian.component(.day, from: date)
     }
+
+    /// Font sizes scale with cell height so larger cells stay balanced.
+    private var dayFontSize: CGFloat { (height * 0.28).clamped(to: 13...22) }
+    private var chipFontSize: CGFloat { (height * 0.21).clamped(to: 9...15) }
+    private var dotSize: CGFloat { (height * 0.16).clamped(to: 7...11) }
 
     private var numberColor: Color {
         if isToday { return AppColors.peachActive }
@@ -61,21 +67,21 @@ struct CalendarDayCell: View {
         if workShifts.isEmpty {
             if let leave = primaryLeave {
                 Text(leave.shortLabel)
-                    .font(AppFont.body(8, .bold))
+                    .font(AppFont.body(chipFontSize, .bold))
                     .foregroundColor(leave.color)
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
             }
         } else {
-            HStack(spacing: 2) {
+            HStack(spacing: 3) {
                 ForEach(Array(workShifts.prefix(2).enumerated()), id: \.offset) { _, s in
                     Text(s.type.shortChip)
-                        .font(AppFont.body(9, .bold))
+                        .font(AppFont.body(chipFontSize, .bold))
                         .foregroundColor(s.type.textColor)
                 }
                 if workShifts.count > 2 {
                     Text("+\(workShifts.count - 2)")
-                        .font(AppFont.body(8, .bold))
+                        .font(AppFont.body(chipFontSize - 1, .bold))
                         .foregroundColor(AppColors.textMuted)
                 }
             }

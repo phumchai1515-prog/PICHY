@@ -1,0 +1,153 @@
+:root {
+  --peach-primary: #F0936A;
+  --peach-active: #E8743F;
+  --peach-grad-a: #F4A47C;
+  --peach-grad-b: #EC7E54;
+  --surface-peach: #FBEDE4;
+  --bg-screen: #FBF6F1;
+  --card: #FFFFFF;
+  --text-primary: #2E2A28;
+  --text-secondary: #6B6460;
+  --text-muted: #A89E97;
+  --divider: #EFE7E0;
+  --income-green: #329F61;
+  --expense-rose: #CE5079;
+  --shadow-card: 0 4px 16px rgba(180, 120, 90, 0.08);
+  --shadow-hero: 0 10px 28px rgba(232, 116, 63, 0.28);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+/* Let flex/grid items shrink below their content so long Thai labels can't
+   force the layout wider than the viewport. */
+*, *::before, *::after { min-width: 0; }
+
+html, body, #root { height: 100%; margin: 0; }
+
+body {
+  font-family: 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg-screen);
+  color: var(--text-primary);
+  overscroll-behavior-y: none;
+  -webkit-font-smoothing: antialiased;
+  /* Thai has no inter-word spaces; allow wrapping so long strings don't overflow. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+html, body { overflow-x: hidden; }
+
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input { font-family: inherit; }
+
+.app-shell {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100%;
+  position: relative;
+  padding-top: var(--safe-top);
+}
+
+.screen { padding: 16px 20px 96px; }
+
+.card {
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: var(--shadow-card);
+}
+
+.hero {
+  background: linear-gradient(135deg, var(--peach-grad-a), var(--peach-grad-b));
+  border-radius: 22px;
+  color: #fff;
+  padding: 20px;
+  box-shadow: var(--shadow-hero);
+}
+
+.row { display: flex; align-items: center; gap: 12px; }
+.between { display: flex; align-items: center; justify-content: space-between; }
+.col { display: flex; flex-direction: column; }
+.grow { flex: 1; }
+.muted { color: var(--text-muted); }
+.secondary { color: var(--text-secondary); }
+
+.h1 { font-size: 22px; font-weight: 700; margin: 0; }
+.h2 { font-size: 16px; font-weight: 600; margin: 0; }
+.small { font-size: 12px; }
+.tiny { font-size: 11px; }
+
+.btn-grad {
+  display: block; width: 100%;
+  background: linear-gradient(135deg, var(--peach-grad-a), var(--peach-grad-b));
+  color: #fff; font-weight: 600; font-size: 15px;
+  padding: 15px; border-radius: 16px;
+  box-shadow: var(--shadow-hero);
+}
+.btn-grad:disabled { opacity: 0.5; }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 10px; border-radius: 999px; font-size: 11px; font-weight: 600;
+}
+
+.square-chip {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 15px; flex-shrink: 0;
+}
+
+.tab-bar {
+  position: fixed; left: 50%; transform: translateX(-50%);
+  bottom: 0; width: 100%; max-width: 480px;
+  display: flex; justify-content: space-around;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--divider);
+  padding: 8px 0 calc(8px + var(--safe-bottom));
+  z-index: 50;
+}
+.tab-item {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  font-size: 10px; color: var(--text-muted); flex: 1; padding: 4px 0;
+}
+.tab-item.active { color: var(--peach-active); }
+.tab-item .ic { font-size: 20px; line-height: 1; }
+
+.fab {
+  position: fixed; bottom: calc(78px + var(--safe-bottom)); right: max(20px, calc(50% - 220px));
+  width: 56px; height: 56px; border-radius: 18px;
+  background: linear-gradient(135deg, var(--peach-grad-a), var(--peach-grad-b));
+  color: #fff; font-size: 26px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow-hero); z-index: 40;
+}
+
+.sheet-backdrop {
+  position: fixed; inset: 0; background: rgba(40,30,25,0.35);
+  z-index: 100; display: flex; align-items: flex-end; justify-content: center;
+}
+.sheet {
+  background: var(--bg-screen); width: 100%; max-width: 480px;
+  border-radius: 24px 24px 0 0; max-height: 92vh; overflow-y: auto;
+  padding: 8px 20px calc(24px + var(--safe-bottom));
+  animation: slideUp 0.25s ease;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.sheet-grip { width: 40px; height: 5px; border-radius: 3px; background: var(--divider); margin: 8px auto 12px; }
+
+.field {
+  width: 100%; padding: 12px 14px; border-radius: 12px;
+  border: 1px solid var(--divider); background: #fff; font-size: 15px; color: var(--text-primary);
+}
+.field:focus { outline: 2px solid var(--peach-primary); outline-offset: -1px; }
+
+.seg { display: flex; gap: 8px; }
+.seg button {
+  flex: 1; padding: 11px; border-radius: 13px; font-weight: 600; font-size: 14px;
+  background: #fff; border: 1px solid var(--divider); color: var(--text-secondary);
+}
+.seg button.on { color: #fff; border-color: transparent; }
+
+.divider { height: 1px; background: var(--divider); }
+.press:active { transform: scale(0.96); transition: transform 0.08s; }

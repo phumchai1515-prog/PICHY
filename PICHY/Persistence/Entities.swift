@@ -84,8 +84,10 @@ final class ActivityEntity {
 /// Singleton row holding rates, profile, settings and first-launch state.
 @Model
 final class AppStateEntity {
-    // Pay rates
+    // Pay rates (dayShift retained as the morning rate for a safe lightweight
+    // migration; afternoonShift defaults to 0 = "same as morning" for old rows).
     var dayShift: Int
+    var afternoonShift: Int = 0
     var nightShift: Int
     var otPerHour: Int
 
@@ -111,6 +113,7 @@ final class AppStateEntity {
     var hasOnboarded: Bool
 
     init(dayShift: Int,
+         afternoonShift: Int = 0,
          nightShift: Int,
          otPerHour: Int,
          name: String,
@@ -127,6 +130,7 @@ final class AppStateEntity {
          vacationQuota: Int = 10,
          hasOnboarded: Bool) {
         self.dayShift = dayShift
+        self.afternoonShift = afternoonShift
         self.nightShift = nightShift
         self.otPerHour = otPerHour
         self.name = name

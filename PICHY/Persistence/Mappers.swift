@@ -95,7 +95,13 @@ extension ActivityEntity {
 
 extension AppStateEntity {
     var rates: PayRates {
-        PayRates(dayShift: dayShift, nightShift: nightShift, otPerHour: otPerHour)
+        PayRates(
+            morningShift: dayShift,
+            // 0 means the row predates the morning/afternoon split: fall back to morning.
+            afternoonShift: afternoonShift == 0 ? dayShift : afternoonShift,
+            nightShift: nightShift,
+            otPerHour: otPerHour
+        )
     }
 
     var profile: UserProfile {
@@ -122,7 +128,8 @@ extension AppStateEntity {
     }
 
     func apply(rates: PayRates) {
-        dayShift = rates.dayShift
+        dayShift = rates.morningShift
+        afternoonShift = rates.afternoonShift
         nightShift = rates.nightShift
         otPerHour = rates.otPerHour
     }
@@ -146,7 +153,8 @@ extension AppStateEntity {
         // Neutral, empty profile until the user registers (onboarding overwrites
         // these). No sample name/hospital is persisted.
         AppStateEntity(
-            dayShift: PayRates.default.dayShift,
+            dayShift: PayRates.default.morningShift,
+            afternoonShift: PayRates.default.afternoonShift,
             nightShift: PayRates.default.nightShift,
             otPerHour: PayRates.default.otPerHour,
             name: "",

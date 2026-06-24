@@ -11,12 +11,14 @@ struct EditRatesView: View {
     @EnvironmentObject var store: AppStore
     @Environment(\.dismiss) private var dismiss
 
-    @State private var dayShift: Int
+    @State private var morningShift: Int
+    @State private var afternoonShift: Int
     @State private var nightShift: Int
     @State private var otPerHour: Int
 
     init(rates: PayRates) {
-        _dayShift = State(initialValue: rates.dayShift)
+        _morningShift = State(initialValue: rates.morningShift)
+        _afternoonShift = State(initialValue: rates.afternoonShift)
         _nightShift = State(initialValue: rates.nightShift)
         _otPerHour = State(initialValue: rates.otPerHour)
     }
@@ -33,7 +35,9 @@ struct EditRatesView: View {
                         .padding(.top, 8)
 
                     VStack(spacing: 0) {
-                        AmountField(type: .morning, label: "เวรเช้า/บ่าย", amount: $dayShift)
+                        AmountField(type: .morning, label: "เวรเช้า", amount: $morningShift)
+                        Divider().background(AppColors.divider).padding(.leading, 60)
+                        AmountField(type: .afternoon, label: "เวรบ่าย", amount: $afternoonShift)
                         Divider().background(AppColors.divider).padding(.leading, 60)
                         AmountField(type: .night, label: "เวรดึก", amount: $nightShift)
                         Divider().background(AppColors.divider).padding(.leading, 60)
@@ -50,7 +54,7 @@ struct EditRatesView: View {
             VStack {
                 Spacer()
                 GradientButton(title: "บันทึก") {
-                    store.updateRates(PayRates(dayShift: dayShift, nightShift: nightShift, otPerHour: otPerHour))
+                    store.updateRates(PayRates(morningShift: morningShift, afternoonShift: afternoonShift, nightShift: nightShift, otPerHour: otPerHour))
                     dismiss()
                 }
                 .padding(.horizontal, 20)

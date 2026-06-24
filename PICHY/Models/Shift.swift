@@ -49,10 +49,11 @@ struct Shift: Identifiable, Codable, Equatable {
     func income(using rates: PayRates) -> Int {
         let base: Int = {
             switch type {
-            case .morning, .afternoon: return rates.dayShift
-            case .night:               return rates.nightShift
-            case .ot:                  return rates.dayShift
-            case .off, .custom:        return 0
+            case .morning:      return rates.morningShift
+            case .afternoon:    return rates.afternoonShift
+            case .night:        return rates.nightShift
+            case .ot:           return rates.morningShift
+            case .off, .custom: return 0
             }
         }()
         return base + otHours * rates.otPerHour

@@ -12,9 +12,10 @@ struct IncomePreviewCard: View {
 
     private var baseIncome: Int {
         switch type {
-        case .morning, .afternoon, .ot: return rates.dayShift
-        case .night:                    return rates.nightShift
-        case .off, .custom:             return 0
+        case .morning, .ot: return rates.morningShift
+        case .afternoon:    return rates.afternoonShift
+        case .night:        return rates.nightShift
+        case .off, .custom: return 0
         }
     }
 

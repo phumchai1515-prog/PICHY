@@ -26,7 +26,8 @@ struct OnboardingFlow: View {
     @State private var avatarData: Data?
 
     // Rates draft (start from sensible defaults)
-    @State private var dayShift = PayRates.default.dayShift
+    @State private var morningShift = PayRates.default.morningShift
+    @State private var afternoonShift = PayRates.default.afternoonShift
     @State private var nightShift = PayRates.default.nightShift
     @State private var otPerHour = PayRates.default.otPerHour
 
@@ -114,7 +115,9 @@ struct OnboardingFlow: View {
             header(title: "อัตราค่าเวร", subtitle: "ค่าเวรของแต่ละโรงพยาบาลไม่เท่ากัน\nกรอกค่าเวรของคุณเพื่อให้ระบบคำนวณรายได้")
 
             VStack(spacing: 0) {
-                AmountField(type: .morning, label: "เวรเช้า/บ่าย", amount: $dayShift)
+                AmountField(type: .morning, label: "เวรเช้า", amount: $morningShift)
+                Divider().background(AppColors.divider).padding(.leading, 60)
+                AmountField(type: .afternoon, label: "เวรบ่าย", amount: $afternoonShift)
                 Divider().background(AppColors.divider).padding(.leading, 60)
                 AmountField(type: .night, label: "เวรดึก", amount: $nightShift)
                 Divider().background(AppColors.divider).padding(.leading, 60)
@@ -178,7 +181,7 @@ struct OnboardingFlow: View {
     private func finish(pin: String) {
         store.completeOnboarding(
             profile: draftProfile,
-            rates: PayRates(dayShift: dayShift, nightShift: nightShift, otPerHour: otPerHour)
+            rates: PayRates(morningShift: morningShift, afternoonShift: afternoonShift, nightShift: nightShift, otPerHour: otPerHour)
         )
         auth.setBiometricEnabled(enableBiometric)
         auth.createPIN(pin)

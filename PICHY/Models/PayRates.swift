@@ -6,15 +6,20 @@
 import Foundation
 
 struct PayRates: Codable, Equatable {
-    let dayShift: Int       // ค่าเวรเช้า/บ่าย
-    let nightShift: Int     // ค่าเวรดึก
-    let otPerHour: Int      // ค่า OT ต่อชั่วโมง
+    let morningShift: Int    // ค่าเวรเช้า
+    let afternoonShift: Int  // ค่าเวรบ่าย
+    let nightShift: Int      // ค่าเวรดึก
+    let otPerHour: Int       // ค่า OT ต่อชั่วโมง
 
-    static let `default` = PayRates(dayShift: 1200, nightShift: 1500, otPerHour: 250)
+    static let `default` = PayRates(morningShift: 1200, afternoonShift: 1200, nightShift: 1500, otPerHour: 250)
 
-    func updating(dayShift: Int? = nil, nightShift: Int? = nil, otPerHour: Int? = nil) -> PayRates {
+    func updating(morningShift: Int? = nil,
+                  afternoonShift: Int? = nil,
+                  nightShift: Int? = nil,
+                  otPerHour: Int? = nil) -> PayRates {
         PayRates(
-            dayShift: dayShift ?? self.dayShift,
+            morningShift: morningShift ?? self.morningShift,
+            afternoonShift: afternoonShift ?? self.afternoonShift,
             nightShift: nightShift ?? self.nightShift,
             otPerHour: otPerHour ?? self.otPerHour
         )

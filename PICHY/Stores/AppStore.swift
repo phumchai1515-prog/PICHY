@@ -294,7 +294,7 @@ final class AppStore: ObservableObject {
         let monthShifts = shiftsInMonth(of: date)
         let otHoursIncome = monthShifts.reduce(0) { $0 + $1.otHours * rates.otPerHour }
         let otShiftCount = monthShifts.filter { $0.type == .ot }.count
-        let otShiftIncome = otShiftCount * rates.dayShift
+        let otShiftIncome = otShiftCount * rates.morningShift
         return otHoursIncome + otShiftIncome
     }
 

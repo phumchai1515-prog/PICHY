@@ -24,9 +24,11 @@ struct ProfileSettingsView: View {
                     NavigationLink {
                         EditRatesView(rates: store.rates)
                     } label: {
-                        PayRateRow(type: .morning, label: "เวรเช้า/บ่าย", amount: store.rates.dayShift, suffix: "")
+                        PayRateRow(type: .morning, label: "เวรเช้า", amount: store.rates.morningShift, suffix: "")
                     }
                     .buttonStyle(.plain)
+                    rowDivider
+                    PayRateRow(type: .afternoon, label: "เวรบ่าย", amount: store.rates.afternoonShift, suffix: "")
                     rowDivider
                     PayRateRow(type: .night, label: "เวรดึก", amount: store.rates.nightShift, suffix: "")
                     rowDivider

@@ -75,11 +75,4 @@ final class AuthManager: ObservableObject {
         biometricEnabled = enabled && biometricKind != .none
         UserDefaults.standard.set(biometricEnabled, forKey: biometricFlagKey)
     }
-
-    /// Removes the PIN entirely (e.g. user disables app lock).
-    func removePIN() {
-        KeychainStore.deletePIN()
-        setBiometricEnabled(false)
-        state = .needsSetup
-    }
 }

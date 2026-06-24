@@ -34,17 +34,6 @@ enum KeychainStore {
         return diff == 0
     }
 
-    @discardableResult
-    static func deletePIN() -> Bool {
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: service,
-            kSecAttrAccount as String: account,
-        ]
-        let status = SecItemDelete(query as CFDictionary)
-        return status == errSecSuccess || status == errSecItemNotFound
-    }
-
     // MARK: - Hashing
 
     private static func hash(_ pin: String) -> String {

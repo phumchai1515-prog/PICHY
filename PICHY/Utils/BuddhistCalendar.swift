@@ -62,12 +62,14 @@ enum BuddhistCalendar {
 }
 
 extension Calendar {
-    static var gregorian: Calendar {
+    /// Cached gregorian calendar (th_TH, Sunday-first). Built once instead of on
+    /// every access, since it is used heavily inside date-filtering loops.
+    static let gregorian: Calendar = {
         var cal = Calendar(identifier: .gregorian)
         cal.locale = Locale(identifier: "th_TH")
         cal.firstWeekday = 1 // Sunday
         return cal
-    }
+    }()
 
     func startOfMonth(for date: Date) -> Date {
         self.date(from: dateComponents([.year, .month], from: date)) ?? date

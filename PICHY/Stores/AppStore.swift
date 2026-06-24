@@ -154,7 +154,7 @@ final class AppStore: ObservableObject {
     // MARK: - Activities (add/remove single)
 
     func addActivity(_ a: Activity) {
-        activities = (activities + [a]).sorted { $0.time < $1.time }
+        activities = (activities + [a]).sorted { ($0.date, $0.time) < ($1.date, $1.time) }
         persist()
     }
 
@@ -208,18 +208,6 @@ final class AppStore: ObservableObject {
 
     func addTransaction(_ t: Transaction) {
         transactions = (transactions + [t]).sorted { $0.date > $1.date }
-        persist()
-    }
-
-    // MARK: - Activities
-
-    func replaceActivities(_ next: [Activity]) {
-        activities = next.sorted { $0.time < $1.time }
-        persist()
-    }
-
-    func addActivities(_ extra: [Activity]) {
-        activities = (activities + extra).sorted { $0.time < $1.time }
         persist()
     }
 

@@ -13,6 +13,7 @@ struct ChangePINView: View {
 
     private enum Phase { case verify, new, confirm }
     @State private var phase: Phase = .verify
+    @State private var currentPIN: String?
     @State private var newPIN: String?
 
     var body: some View {
@@ -53,6 +54,7 @@ struct ChangePINView: View {
         switch phase {
         case .verify:
             guard auth.unlock(with: pin) else { return false }
+            currentPIN = pin
             phase = .new
             return true
         case .new:
@@ -60,8 +62,8 @@ struct ChangePINView: View {
             phase = .confirm
             return true
         case .confirm:
-            guard let target = newPIN, pin == target,
-                  KeychainStore.setPIN(pin) else { return false }
+            guard let current = currentPIN, let target = newPIN, pin == target,
+                  auth.changePIN(current: current, new: pin) else { return false }
             UINotificationFeedbackGenerator().notificationOccurred(.success)
             dismiss()
             return true

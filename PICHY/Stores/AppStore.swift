@@ -74,7 +74,9 @@ final class AppStore: ObservableObject {
     }
 
     private func rescheduleNotifications() {
-        notifications.reschedule(shifts: shifts, settings: settings, from: today)
+        // Use the real current time (not the day anchor) so reminders for later
+        // today are evaluated precisely and past ones aren't scheduled.
+        notifications.reschedule(shifts: shifts, settings: settings, from: Date())
     }
 
     // MARK: - Profile / onboarding

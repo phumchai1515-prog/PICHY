@@ -55,7 +55,21 @@ final class NotificationManager {
     /// Cancels and re-creates all shift reminders from the current data.
     /// Safe to call on every shift/settings change.
     func reschedule(shifts: [Shift], settings: AppSettings, from now: Date) {
-        cancelAll()
+        // Look up the existing reminders first, then remove-and-re-add in order.
+        // Reminders reuse stable per-shift identifiers, so the removal MUST run
+        // before the adds — otherwise it deletes the freshly scheduled ones.
+        center.getPendingNotificationRequests { [self] reqs in
+            let stale = reqs.map(\.identifier).filter {
+                $0.hasPrefix(shiftPrefix) || $0.hasPrefix(summaryPrefix)
+            }
+            Task { @MainActor in
+                self.center.removePendingNotificationRequests(withIdentifiers: stale)
+                self.scheduleReminders(shifts: shifts, settings: settings, from: now)
+            }
+        }
+    }
+
+    private func scheduleReminders(shifts: [Shift], settings: AppSettings, from now: Date) {
         guard settings.shiftReminder else { return }
 
         let cal = Calendar.gregorian
@@ -69,16 +83,6 @@ final class NotificationManager {
             if settings.nightlySummary {
                 scheduleNightlySummary(shift, now: now, horizon: horizon, cal: cal)
             }
-        }
-    }
-
-    func cancelAll() {
-        // Only remove our shift/summary requests, leaving any test alert intact.
-        center.getPendingNotificationRequests { reqs in
-            let ids = reqs.map(\.identifier).filter {
-                $0.hasPrefix(self.shiftPrefix) || $0.hasPrefix(self.summaryPrefix)
-            }
-            self.center.removePendingNotificationRequests(withIdentifiers: ids)
         }
     }
 

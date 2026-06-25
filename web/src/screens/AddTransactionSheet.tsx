@@ -59,10 +59,11 @@ export default function AddTransactionSheet({ onClose }: { onClose: () => void }
           <div className="row" style={{ flexWrap: 'wrap', gap: 8 }}>
             {CATS.map((c) => {
               const on = cat === c
+              const Icon = EXPENSE_META[c].icon
               return (
                 <button key={c} className="chip press" onClick={() => setCat(c)}
                   style={{ background: on ? 'var(--peach-primary)' : '#fff', color: on ? '#fff' : 'var(--text-secondary)', border: on ? 'none' : '1px solid var(--divider)' }}>
-                  {EXPENSE_META[c].icon} {EXPENSE_META[c].label}
+                  <Icon size={14} /> {EXPENSE_META[c].label}
                 </button>
               )
             })}

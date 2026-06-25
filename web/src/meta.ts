@@ -5,6 +5,12 @@ import type {
   ExpenseCategory,
   ActivityCategory,
 } from './types'
+import {
+  Coffee, Flag, Cross, UserRound, Umbrella,
+  UtensilsCrossed, Car, ShoppingCart, Receipt, MoreHorizontal,
+  Stethoscope, Users, Clock, Heart,
+  type LucideIcon,
+} from 'lucide-react'
 
 interface ShiftMeta {
   label: string
@@ -28,35 +34,35 @@ export const SHIFT_META: Record<ShiftType, ShiftMeta> = {
 interface LeaveMeta {
   label: string
   shortLabel: string
-  icon: string // emoji
+  icon: LucideIcon
   color: string
   tint: string
   hasQuota: boolean
 }
 
 export const LEAVE_META: Record<LeaveType, LeaveMeta> = {
-  dayOff: { label: 'วันหยุด', shortLabel: 'พัก', icon: '☕️', color: '#329F61', tint: '#E6F2E8', hasQuota: false },
-  publicHoliday: { label: 'วันหยุดนักขัตฤกษ์', shortLabel: 'นักขัตฤกษ์', icon: '🚩', color: '#E5894B', tint: '#FBEAD9', hasQuota: false },
-  sick: { label: 'ลาป่วย', shortLabel: 'ป่วย', icon: '🏥', color: '#CE5079', tint: '#FAE3EB', hasQuota: true },
-  personal: { label: 'ลากิจ', shortLabel: 'กิจ', icon: '🧍', color: '#7E6EE0', tint: '#EBE6FA', hasQuota: true },
-  vacation: { label: 'ลาพักร้อน', shortLabel: 'พักร้อน', icon: '🏖️', color: '#43B0A0', tint: '#DFF1ED', hasQuota: true },
+  dayOff: { label: 'วันหยุด', shortLabel: 'พัก', icon: Coffee, color: '#329F61', tint: '#E6F2E8', hasQuota: false },
+  publicHoliday: { label: 'วันหยุดนักขัตฤกษ์', shortLabel: 'นักขัตฤกษ์', icon: Flag, color: '#E5894B', tint: '#FBEAD9', hasQuota: false },
+  sick: { label: 'ลาป่วย', shortLabel: 'ป่วย', icon: Cross, color: '#CE5079', tint: '#FAE3EB', hasQuota: true },
+  personal: { label: 'ลากิจ', shortLabel: 'กิจ', icon: UserRound, color: '#7E6EE0', tint: '#EBE6FA', hasQuota: true },
+  vacation: { label: 'ลาพักร้อน', shortLabel: 'พักร้อน', icon: Umbrella, color: '#43B0A0', tint: '#DFF1ED', hasQuota: true },
 }
 
 export const QUOTA_KINDS: LeaveType[] = ['sick', 'personal', 'vacation']
 
-export const EXPENSE_META: Record<ExpenseCategory, { label: string; icon: string }> = {
-  food: { label: 'อาหาร', icon: '🍽️' },
-  transport: { label: 'เดินทาง', icon: '🚗' },
-  shopping: { label: 'ช้อปปิ้ง', icon: '🛒' },
-  bills: { label: 'บิล', icon: '🧾' },
-  other: { label: 'อื่นๆ', icon: '•••' },
+export const EXPENSE_META: Record<ExpenseCategory, { label: string; icon: LucideIcon }> = {
+  food: { label: 'อาหาร', icon: UtensilsCrossed },
+  transport: { label: 'เดินทาง', icon: Car },
+  shopping: { label: 'ช้อปปิ้ง', icon: ShoppingCart },
+  bills: { label: 'บิล', icon: Receipt },
+  other: { label: 'อื่นๆ', icon: MoreHorizontal },
 }
 
-export const ACTIVITY_META: Record<ActivityCategory, { label: string; icon: string; color: string; tint: string }> = {
-  morningShift: { label: 'งานเวร', icon: '🩺', color: '#EBA63F', tint: '#FAEBD3' },
-  meeting: { label: 'ประชุม', icon: '👥', color: '#43B0A0', tint: '#DFF1ED' },
-  ot: { label: 'OT', icon: '⏱️', color: '#EC6E95', tint: '#FAE3EB' },
-  personal: { label: 'ส่วนตัว', icon: '❤️', color: '#7E6EE0', tint: '#EBE6FA' },
+export const ACTIVITY_META: Record<ActivityCategory, { label: string; icon: LucideIcon; color: string; tint: string }> = {
+  morningShift: { label: 'งานเวร', icon: Stethoscope, color: '#EBA63F', tint: '#FAEBD3' },
+  meeting: { label: 'ประชุม', icon: Users, color: '#43B0A0', tint: '#DFF1ED' },
+  ot: { label: 'OT', icon: Clock, color: '#EC6E95', tint: '#FAE3EB' },
+  personal: { label: 'ส่วนตัว', icon: Heart, color: '#7E6EE0', tint: '#EBE6FA' },
 }
 
 export const REMINDER_LABELS: Record<number, string> = {

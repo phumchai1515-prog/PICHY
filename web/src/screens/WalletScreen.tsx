@@ -5,6 +5,7 @@ import { SHIFT_META, EXPENSE_META } from '../meta'
 import { baht, signed } from '../utils/money'
 import { todayKey, dayMonthShort, fromKey } from '../utils/thaiDate'
 import type { Transaction } from '../types'
+import { Wallet, type LucideIcon } from 'lucide-react'
 import AddTransactionSheet from './AddTransactionSheet'
 
 export default function WalletScreen() {
@@ -60,12 +61,14 @@ export default function WalletScreen() {
 }
 
 function Row({ t }: { t: Transaction }) {
-  const chip = t.shiftType
-    ? { bg: SHIFT_META[t.shiftType].tint, fg: SHIFT_META[t.shiftType].text, icon: SHIFT_META[t.shiftType].shortChip }
-    : { bg: 'var(--surface-peach)', fg: 'var(--peach-primary)', icon: iconFor(t.category) }
+  const bg = t.shiftType ? SHIFT_META[t.shiftType].tint : 'var(--surface-peach)'
+  const fg = t.shiftType ? SHIFT_META[t.shiftType].text : 'var(--peach-primary)'
+  const ExpenseIcon = iconFor(t.category)
   return (
     <div className="row" style={{ padding: 14 }}>
-      <div className="square-chip" style={{ background: chip.bg, color: chip.fg }}>{chip.icon}</div>
+      <div className="square-chip" style={{ background: bg, color: fg }}>
+        {t.shiftType ? SHIFT_META[t.shiftType].shortChip : <ExpenseIcon size={18} />}
+      </div>
       <div className="grow col" style={{ gap: 2 }}>
         <span className="small" style={{ fontWeight: 600 }}>{t.title}</span>
         <span className="tiny muted">{t.category}</span>
@@ -75,9 +78,9 @@ function Row({ t }: { t: Transaction }) {
   )
 }
 
-function iconFor(label: string): string {
+function iconFor(label: string): LucideIcon {
   for (const m of Object.values(EXPENSE_META)) if (m.label === label) return m.icon
-  return '💳'
+  return Wallet
 }
 
 function groupByDay(txs: Transaction[]): { day: string; label: string; items: Transaction[] }[] {

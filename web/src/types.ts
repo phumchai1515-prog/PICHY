@@ -51,6 +51,7 @@ export interface UserProfile {
   name: string
   role: string
   hospital: string
+  avatar?: string // data URL of profile photo
 }
 
 export type ReminderLead = 30 | 60 | 120 | 180 | 300 | 480 | 720

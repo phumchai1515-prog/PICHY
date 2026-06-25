@@ -33,10 +33,11 @@ export default function AddActivitySheet({ date, onClose }: { date: string; onCl
           {CATS.map((c) => {
             const m = ACTIVITY_META[c]
             const on = cat === c
+            const Icon = m.icon
             return (
               <button key={c} className="chip press" onClick={() => setCat(c)}
                 style={{ background: on ? m.color : '#fff', color: on ? '#fff' : 'var(--text-secondary)', border: on ? 'none' : '1px solid var(--divider)' }}>
-                {m.icon} {m.label}
+                <Icon size={14} /> {m.label}
               </button>
             )
           })}

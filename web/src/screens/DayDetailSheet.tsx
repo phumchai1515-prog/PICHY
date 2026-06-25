@@ -40,7 +40,9 @@ export default function DayDetailSheet({ date, onClose }: { date: string; onClos
             <div key={sh.id}>
               <button className="row press" style={{ width: '100%', padding: 12, textAlign: 'left' }} onClick={() => setEditShift(sh)}>
                 {leave ? (
-                  <div className="square-chip" style={{ background: LEAVE_META[leave].tint, color: LEAVE_META[leave].color }}>{LEAVE_META[leave].icon}</div>
+                  (() => { const LeaveIcon = LEAVE_META[leave].icon; return (
+                    <div className="square-chip" style={{ background: LEAVE_META[leave].tint, color: LEAVE_META[leave].color }}><LeaveIcon size={18} /></div>
+                  ) })()
                 ) : (
                   <div className="square-chip" style={{ background: m.tint, color: m.text }}>{m.shortChip}</div>
                 )}
@@ -67,10 +69,11 @@ export default function DayDetailSheet({ date, onClose }: { date: string; onClos
           <div className="muted small" style={{ padding: 16 }}>ยังไม่มีกิจกรรมในวันนี้</div>
         ) : dayActs.map((a, i) => {
           const m = ACTIVITY_META[a.category]
+          const ActIcon = m.icon
           return (
             <div key={a.id}>
               <div className="row" style={{ padding: 12 }}>
-                <div className="square-chip" style={{ background: m.tint, color: m.color }}>{m.icon}</div>
+                <div className="square-chip" style={{ background: m.tint, color: m.color }}><ActIcon size={18} /></div>
                 <div className="grow col" style={{ gap: 2 }}>
                   <span className="small" style={{ fontWeight: 600 }}>{a.title}</span>
                   {a.note && <span className="tiny muted">{a.note}</span>}

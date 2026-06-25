@@ -60,10 +60,11 @@ export default function AddShiftSheet({ date, editing, onClose }: { date: string
             {LEAVES.map((l) => {
               const m = LEAVE_META[l]
               const on = leave === l
+              const Icon = m.icon
               return (
                 <button key={l} className="chip press" onClick={() => setLeave(l)}
                   style={{ background: on ? m.color : m.tint, color: on ? '#fff' : m.color }}>
-                  {m.icon} {m.label}
+                  <Icon size={14} /> {m.label}
                 </button>
               )
             })}

@@ -8,7 +8,7 @@ import { baht } from '../utils/money'
 import { WEEKDAY_HEADERS, monthCells, monthYearLong, addMonths, todayKey, toKey, greeting } from '../utils/thaiDate'
 import DayDetailSheet from './DayDetailSheet'
 import AddShiftSheet from './AddShiftSheet'
-import { MascotHead } from '../components/Mascot'
+import Avatar from '../components/Avatar'
 
 export default function CalendarScreen() {
   const { shifts, transactions, rates, profile } = useStore()
@@ -30,7 +30,7 @@ export default function CalendarScreen() {
           <span className="tiny muted">{greeting()}</span>
           <span className="h2">{profile.name || 'คุณพยาบาล'}</span>
         </div>
-        <MascotHead size={48} />
+        <Avatar profile={profile} size={46} />
       </div>
 
       <div className="card" style={{ padding: 16, marginBottom: 16 }}>

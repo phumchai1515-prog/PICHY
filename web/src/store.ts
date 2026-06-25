@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persist, createJSONStorage } from 'zustand/middleware'
 import type {
   Shift, Transaction, Activity, PayRates, UserProfile, AppSettings, LeaveQuota, LeaveType,
 } from './types'
@@ -99,6 +99,21 @@ export const useStore = create<AppState>()(
           settings: DEFAULT_SETTINGS, quota: DEFAULT_QUOTA, hasOnboarded: false,
         }),
     }),
-    { name: 'pichy-store-v1' },
+    {
+      name: 'pichy-store-v1',
+      version: 1,
+      storage: createJSONStorage(() => localStorage),
+      // Persist only data, never the action functions.
+      partialize: (s) => ({
+        shifts: s.shifts,
+        transactions: s.transactions,
+        activities: s.activities,
+        rates: s.rates,
+        profile: s.profile,
+        settings: s.settings,
+        quota: s.quota,
+        hasOnboarded: s.hasOnboarded,
+      }),
+    },
   ),
 )

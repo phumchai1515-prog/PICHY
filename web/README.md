@@ -19,12 +19,20 @@ npm run preview  # ดู build จริง
 ```
 
 ## Deploy (GitHub Pages — ฟรี)
-1. สร้าง repo ชื่อ **PICHY** บน GitHub แล้ว push โค้ดนี้ขึ้นไป
-2. ใน repo → **Settings → Pages → Build and deployment → Source: GitHub Actions**
-3. Workflow `.github/workflows/deploy-web.yml` จะ build `web/` และ deploy อัตโนมัติทุกครั้งที่ push
-4. แอปจะอยู่ที่ `https://<username>.github.io/PICHY/`
+Deploy แล้วที่ **https://phumchai1515-prog.github.io/PICHY/** (source = branch `gh-pages`).
+
+อัปเดตเว็บครั้งต่อไป:
+```bash
+cd web
+npm run deploy   # build + push ขึ้น branch gh-pages
+```
 
 > ถ้าตั้งชื่อ repo อื่นที่ไม่ใช่ `PICHY` ต้องแก้ `base` ใน `web/vite.config.ts` ให้ตรง
+>
+> **Auto-deploy (ทางเลือก):** ถ้าอยากให้ deploy อัตโนมัติทุกครั้งที่ push มี
+> `.github/workflows/deploy-web.yml` เตรียมไว้แล้ว (ยังไม่ commit เพราะ token ปัจจุบัน
+> ไม่มี scope `workflow`) — รัน `gh auth refresh -h github.com -s workflow` แล้ว
+> `git add .github && git commit && git push` จากนั้นตั้ง Pages Source เป็น GitHub Actions
 
 ## ติดตั้งลงเครื่อง (ผู้ใช้)
 - **iOS Safari:** เปิดลิงก์ → ปุ่มแชร์ → "เพิ่มไปยังหน้าจอโฮม"
